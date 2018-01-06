@@ -18,7 +18,7 @@ class QTable {
   public:
     float get(std::vector<float> state, int action);
     void set(std::vector<float> state, int action, float value);
-    std::pair<std::vector<float>, int> best(std::vector<float> state);
+    std::pair<int, float> best(std::vector<float> state);
   private:
     std::map<std::pair<std::vector<float>, int>, float> _table;
 };
@@ -26,7 +26,7 @@ class QTable {
 class GreedyQ {
   public:
   GreedyQ() {}
-  GreedyQ(QTable q) {
+  GreedyQ(QTable& q) {
     _q = q;
   }
   int pick_action(std::vector<float> state);
@@ -39,7 +39,7 @@ class EpsilonPolicy {
 	
   public:
   EpsilonPolicy() {}
-  EpsilonPolicy(GreedyQ policy_a, RandomPolicy policy_b, float epsilon){
+  EpsilonPolicy(GreedyQ& policy_a, RandomPolicy policy_b, float epsilon){
     _greedy = policy_a;
     _random = policy_b;
     _epsilon = epsilon;
@@ -56,7 +56,7 @@ class QLearner {
   public:
     QLearner() {
     }
-    QLearner(QTable q, float learning_rate, float discount_rate) {
+    QLearner(QTable& q, float learning_rate, float discount_rate) {
       _q = q;
       _alpha = learning_rate;
       _gamma = discount_rate;
@@ -78,7 +78,7 @@ class MachinePlayer {
     _policy = policy;
     _learner = learner;
   }
-  void interact(Simulation);
+  void interact(Simulation&);
   private:
     EpsilonPolicy _policy;
     QLearner _learner;
@@ -94,7 +94,7 @@ class BasicBlock {
       _driver = driver;
     }
  
-  void step();
+  void step(bool);
   void _draw();
   private:
     int _wins;

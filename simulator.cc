@@ -2,30 +2,31 @@
 
 std::vector<float> reg = {33.3, 35.8, 3.5};
 
-
 float spill(int action) {
   return reg[action];
 }
 
 void Simulation::reset() {
-  _state = init_state;
+  _state = {0.0, 0.0, 0.0};
   _score = 0;
 }
 
-int Simulation::allocate(int action) {
+float Simulation::allocate(int action) {
   int reward = -1;
 
   float w = spill(action);
   std::vector<float> new_state = reg;
   if (w > 0.0) {
     if (w > prev_weight) {
-      reward -= 10000;
+      reward = -10000;
     } else if (w <= prev_weight) {
-      reward += 1000;
-    } else if (w <= prev_weight && terminal_state) {  
-      reward += 10000;
+      reward = 5;
+    } else if (w == prev_weight && terminal_state) {  
+      reward = 5;
+    } else if (w < prev_weight && terminal_state) {  
+      reward = 10000;
     }
-      _state = new_state;
+      _state = reg;
   } else {
       reward -= 5;
   }
@@ -36,5 +37,8 @@ int Simulation::allocate(int action) {
 }	  
 
 void Simulation::terminal() {
-  prev_weight = curr_weight;
+  if (prev_weight < curr_weight) {
+    prev_weight = curr_weight;
+  }
+  curr_weight = 0.0;
 }
