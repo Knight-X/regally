@@ -16,28 +16,28 @@ float Simulation::allocate(int action) {
 
   float w = spill(action);
   std::vector<float> new_state = reg;
+  curr_weight += w;
   if (w > 0.0) {
-    if (w > prev_weight) {
+    if (curr_weight > prev_weight) {
       reward = -10000;
-    } else if (w <= prev_weight) {
+    } else if (curr_weight == prev_weight && terminal_state) {  
       reward = 5;
-    } else if (w == prev_weight && terminal_state) {  
-      reward = 5;
-    } else if (w < prev_weight && terminal_state) {  
+    } else if (curr_weight < prev_weight && terminal_state) {  
       reward = 10000;
+    } else if (curr_weight <= prev_weight) {
+      reward = 5;
     }
       _state = reg;
   } else {
       reward -= 5;
   }
 
-  curr_weight += w;
   _score += reward;
   return reward;
 }	  
 
 void Simulation::terminal() {
-  if (prev_weight < curr_weight) {
+  if (prev_weight > curr_weight) {
     prev_weight = curr_weight;
   }
   curr_weight = 0.0;

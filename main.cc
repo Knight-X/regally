@@ -3,8 +3,8 @@
 #include <iostream>
 int main(){
   QTable g;
-  QLearner learn(g, 0.05, 0.1);
-  GreedyQ q(g);
+  QLearner learn(&g, 0.05, 0.1);
+  GreedyQ q(&g);
   RandomPolicy r;
   EpsilonPolicy policy(q, r, 0.5);
   MachinePlayer mp(policy, learn);

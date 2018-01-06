@@ -26,13 +26,13 @@ class QTable {
 class GreedyQ {
   public:
   GreedyQ() {}
-  GreedyQ(QTable& q) {
+  GreedyQ(QTable* q) {
     _q = q;
   }
   int pick_action(std::vector<float> state);
 
   private:
-    QTable _q;
+    QTable* _q;
 };
 
 class EpsilonPolicy {
@@ -56,7 +56,7 @@ class QLearner {
   public:
     QLearner() {
     }
-    QLearner(QTable& q, float learning_rate, float discount_rate) {
+    QLearner(QTable* q, float learning_rate, float discount_rate) {
       _q = q;
       _alpha = learning_rate;
       _gamma = discount_rate;
@@ -66,7 +66,7 @@ class QLearner {
   private:
    float _alpha;
    float _gamma; 
-   QTable _q;
+   QTable* _q;
 };
 
 

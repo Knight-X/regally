@@ -1,4 +1,5 @@
 #include "rl.h"
+#include <limits>
 
 void BasicBlock::step(bool ter) {
    if (ter) {
@@ -28,7 +29,7 @@ int RandomPolicy::pick_action() {
 }
 
 int GreedyQ::pick_action(std::vector<float> state) {
-    return _q.best(state).first;
+    return _q->best(state).first;
 }
 
 int EpsilonPolicy::pick_action(std::vector<float> state) {
@@ -52,9 +53,9 @@ void QTable::set(std::vector<float> state, int action, float value) {
 
 
 std::pair<int, float>  QTable::best(std::vector<float> state) {
-  float best_value = 0.00001;
-  int best_action = 2;
-  for (int action = 0; action < 5; action++) {
+  float best_value = -std::numeric_limits<float>::max();
+  int best_action = 0;
+  for (int action = 0; action < 3; action++) {
     float value = get(state, action);
     if (value > best_value) {
       best_action = action;
@@ -67,9 +68,9 @@ std::pair<int, float>  QTable::best(std::vector<float> state) {
 
 
 void QLearner::observe(std::vector<float> old_state, int action, float reward, std::vector<float> new_state) {
-  float prev = _q.get(old_state, action);
-  _q.set(old_state, action, prev + _alpha * (
-        reward + _gamma * _q.best(new_state).second - prev));
+  float prev = _q->get(old_state, action);
+  _q->set(old_state, action, prev + _alpha * (
+        reward + _gamma * _q->best(new_state).second - prev));
 }
 
 void MachinePlayer::interact(Simulation& sim) {
